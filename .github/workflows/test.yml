@@ -10,7 +10,7 @@ jobs:
       matrix:
         include:
           - name: First job            
-            files_artefact: Files (${{ matrix.name }})
+            files_artefact: Files (${{ name }})
 
     steps:
 
