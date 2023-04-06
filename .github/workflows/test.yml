@@ -6,6 +6,12 @@ jobs:
   first:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - name: First job            
+            files_artefact: Files (${{ matrix.name }})
+
     steps:
 
     - name: Create files
@@ -25,7 +31,7 @@ jobs:
     - name: Upload files
       uses: actions/upload-artifact@v3
       with:
-        name: Files
+        name: ${{ matrix.files_artefact }}
         path: |
           build/file0
           build/dir1/file1
@@ -33,7 +39,7 @@ jobs:
           build/dir1/dir2/dir3/file3
         retention-days: 1
 
-    - name: Upload files
+    - name: Upload folder
       uses: actions/upload-artifact@v3
       with:
         name: Folder
@@ -58,7 +64,7 @@ jobs:
     - name: Download files
       uses: actions/download-artifact@v3
       with:
-        name: Files
+        name: ${{ needs.first.matrix.files_artefact }}
         path: files
 
     - name: Download folder
@@ -78,4 +84,4 @@ jobs:
     - name: Delete unused artifact
       uses: geekyeggo/delete-artifact@v2
       with:
-          name: Files
+          name: Folder
