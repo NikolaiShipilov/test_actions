@@ -12,9 +12,6 @@ jobs:
           - name: First job      
           - name: First another job       
 
-    env:
-      files_artefact: Files (${{ matrix.name }})
-
     steps:
 
     - name: Create files
@@ -32,9 +29,10 @@ jobs:
       run: ls -Rhl
 
     - name: Upload files
+      id: upload_files
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.files_artefact }}
+        name: Files (${{ matrix.name }})
         path: |
           build/file0
           build/dir1/file1
@@ -64,10 +62,15 @@ jobs:
       with:
         files: files
 
+    - name: Display step parameters
+      run: |
+        echo ${{ needs.first.steps.upload_files.name }}
+        echo ${{ needs.first.steps.upload_files.with.name }}
+
     - name: Download files
       uses: actions/download-artifact@v3
       with:
-        name: ${{ needs.first.env.files_artefact }}
+        name: ${{ needs.first.steps.upload_files.with.name }}
         path: files
 
     - name: Download folder
