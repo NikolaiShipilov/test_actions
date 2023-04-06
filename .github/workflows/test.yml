@@ -33,14 +33,9 @@ jobs:
   second:
     runs-on: macos-latest
 
-    defaults:
-      run:
-        working-directory: files
-
     steps:
 
     - name: Checkout files
-      working-directory: $HOME
       uses: Bhacaz/checkout-files@v2
       with:
         files: files
@@ -49,6 +44,8 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: Files
+        path: files
 
     - name: Display files in working directory
+      working-directory: files
       run: ls -Rhl
