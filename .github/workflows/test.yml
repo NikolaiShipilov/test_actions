@@ -6,10 +6,10 @@ jobs:
   first:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        include:
-          - name: First job      
+    #strategy:
+    #  matrix:
+    #    include:
+    #      - name: First job      
           #- name: First another job       
 
     steps:
