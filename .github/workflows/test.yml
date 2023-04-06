@@ -33,9 +33,14 @@ jobs:
   second:
     runs-on: macos-latest
 
+    defaults:
+      run:
+        working-directory: files
+
     steps:
 
     - name: Checkout files
+      working-directory: $HOME
       uses: Bhacaz/checkout-files@v2
       with:
         files: files
