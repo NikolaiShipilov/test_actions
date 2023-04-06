@@ -30,6 +30,13 @@ jobs:
           build/dir1/dir2/dir3/file3
         retention-days: 1
 
+    - name: Upload files
+      uses: actions/upload-artifact@v3
+      with:
+        name: Folder
+        path: build/dir1/dir2/dir3
+        retention-days: 1
+
   second:
     runs-on: macos-latest
     needs: [first]
@@ -50,6 +57,12 @@ jobs:
       with:
         name: Files
         path: files
+
+    - name: Download folder
+      uses: actions/download-artifact@v3
+      with:
+        name: Folder
+        path: files/file777
 
     - name: Display files in working directory
       run: ls -Rhl
