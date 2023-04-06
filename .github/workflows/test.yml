@@ -15,6 +15,9 @@ jobs:
         echo "111" > build/dir1/file1
         echo "222" > build/dir1/dir2/file2
         echo "333" > build/dir1/dir2/dir3/file3
+        mkdir -p dir
+        echo "abracadabra" > dir/abracadabra.txt
+        echo "text" > dir/text.txt
 
     - name: Display files in working directory
       run: ls -Rhl
@@ -34,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Folder
-        path: build/dir1/dir2/dir3
+        path: dir
         retention-days: 1
 
   second:
@@ -62,7 +65,12 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: Folder
-        path: files/file777
+        path: files
+
+    - name: Select first file with extention
+      run: |
+        textfiles=( *.txt )
+        echo "${textfiles[0]}"
 
     - name: Display files in working directory
       run: ls -Rhl
