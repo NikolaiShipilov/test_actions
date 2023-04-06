@@ -10,7 +10,9 @@ jobs:
       matrix:
         include:
           - name: First job            
-            files_artefact: Files (${{ name }})
+
+    env:
+      files_artefact: Files (${{ matrix.name }})
 
     steps:
 
@@ -64,7 +66,7 @@ jobs:
     - name: Download files
       uses: actions/download-artifact@v3
       with:
-        name: ${{ needs.first.matrix.files_artefact }}
+        name: ${{ needs.first.env.files_artefact }}
         path: files
 
     - name: Download folder
