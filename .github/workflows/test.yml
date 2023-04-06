@@ -9,7 +9,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: First job            
+          - name: First job      
+          - name: First another job       
 
     env:
       files_artefact: Files (${{ matrix.name }})
