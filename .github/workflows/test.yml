@@ -74,3 +74,8 @@ jobs:
 
     - name: Display files in working directory
       run: ls -Rhl
+
+    - name: Delete unused artifact
+      uses: geekyeggo/delete-artifact@v2
+      with:
+          name: Files
