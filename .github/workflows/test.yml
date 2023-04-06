@@ -32,6 +32,11 @@ jobs:
 
   second:
     runs-on: macos-latest
+    needs: [first]
+
+    defaults:
+      run:
+        working-directory: files
 
     steps:
 
@@ -47,5 +52,4 @@ jobs:
         path: files
 
     - name: Display files in working directory
-      working-directory: files
       run: ls -Rhl
