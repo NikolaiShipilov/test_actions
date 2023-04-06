@@ -1,0 +1,49 @@
+name: vagrant-ubuntu-up
+
+on: [push]
+
+jobs:
+  first:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Create files
+      run: |
+        mkdir -p build/dir1/dir2/dir3
+        echo "000" > build/file0
+        echo "111" > build/dir1/file1
+        echo "222" > build/dir1/dir2/file2
+        echo "333" > build/dir1/dir2/dir3/file3
+
+    - name: Display files in working directory
+      run: ls -Rhl
+
+    - name: Upload files
+      uses: actions/upload-artifact@v3
+      with:
+        name: Files
+        path: |
+          build/file0
+          build/dir1/file1
+          build/dir1/dir2/file2
+          build/dir1/dir2/dir3/file3
+        retention-days: 1
+
+  second:
+    runs-on: macos-latest
+
+    steps:
+
+    - name: Checkout files
+      uses: Bhacaz/checkout-files@v2
+      with:
+        files: files/
+
+    - name: Download files
+      uses: actions/download-artifact@v3
+      with:
+        name: Files
+
+    - name: Display files in working directory
+      run: ls -Rhl
