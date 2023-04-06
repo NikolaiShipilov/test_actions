@@ -9,14 +9,17 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: First job      
-          #- name: First another job       
+          - name: First job
+            run_second: true
+          - name: First another job
+            run_second: false
 
     env:
       files_artifact: Files (${{ matrix.name }})
 
     outputs:
       job_name: ${{ matrix.name }}
+      run_second: ${{ matrix.run_second }}
       files_artifact: ${{ env.files_artifact }}
 
     steps:
@@ -47,6 +50,7 @@ jobs:
         retention-days: 1
 
     - name: Upload folder
+      if: matrix.run_second == true
       uses: actions/upload-artifact@v3
       with:
         name: Folder
@@ -56,6 +60,8 @@ jobs:
   second:
     runs-on: macos-latest
     needs: [first]
+
+    if: needs.first.outputs.run_second == true
 
     defaults:
       run:
@@ -70,8 +76,8 @@ jobs:
 
     - name: Display job output
       run: |
-        echo ${{ needs.first.outputs.job_name }}
-        echo ${{ needs.first.outputs.files_artifact }}
+        echo "${{ needs.first.outputs.job_name }}"
+        echo "${{ needs.first.outputs.files_artifact }}"
 
     - name: Download files
       uses: actions/download-artifact@v3
