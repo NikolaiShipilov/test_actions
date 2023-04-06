@@ -6,11 +6,18 @@ jobs:
   first:
     runs-on: ubuntu-latest
 
-    #strategy:
-    #  matrix:
-    #    include:
-    #      - name: First job      
+    strategy:
+      matrix:
+        include:
+          - name: First job      
           #- name: First another job       
+
+    env:
+      files_artifact: Files (${{ matrix.name }})
+
+    outputs:
+      job_name: ${{ matrix.name }}
+      files_artifact: ${{ env.files_artifact }}
 
     steps:
 
@@ -29,10 +36,9 @@ jobs:
       run: ls -Rhl
 
     - name: Upload files
-      id: upload_files
       uses: actions/upload-artifact@v3
       with:
-        name: Files (${{ matrix.name }})
+        name: ${{ env.files_artifact }}
         path: |
           build/file0
           build/dir1/file1
@@ -62,15 +68,15 @@ jobs:
       with:
         files: files
 
-    - name: Display step parameters
+    - name: Display job output
       run: |
-        echo ${{ needs.first.steps.upload_files.name }}
-        echo ${{ needs.first.steps.upload_files.with.name }}
+        echo ${{ needs.first.outputs.job_name }}
+        echo ${{ needs.first.outputs.files_artifact }}
 
     - name: Download files
       uses: actions/download-artifact@v3
       with:
-        name: ${{ needs.first.steps.upload_files.with.name }}
+        name: ${{ needs.first.outputs.files_artifact }}
         path: files
 
     - name: Download folder
