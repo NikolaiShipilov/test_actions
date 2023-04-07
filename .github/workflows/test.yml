@@ -21,6 +21,6 @@ jobs:
       working-directory: simulator
       shell: sh
       run: |
-        PACKAGE=$(ls ${{ env.package_path }}/*.deb| head -1)
+        echo "Package is $(ls ${{ env.package_path }}/*.deb| head -1)"
         debfiles=( ${{ env.package_path }}/*.deb )
         echo "Package is ${debfiles[0]}"
