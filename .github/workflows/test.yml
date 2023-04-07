@@ -20,5 +20,5 @@ jobs:
     - name: Find package and run vagrant
       working-directory: simulator
       run: |
-        debfiles=${{ env.package_path }}/*.deb
+        debfiles=( ../build/_packages/*.deb )
         echo "Package is ${debfiles[0]}"
