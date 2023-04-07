@@ -2,104 +2,23 @@ name: vagrant-ubuntu-up
 
 on: [push]
 
+env:
+  package_path: ${{ github.workspace }}/build/_packages
+
 jobs:
   first:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        include:
-          - name: First job
-            run_second: true
-          - name: First another job
-            run_second: false
-
-    env:
-      files_artifact: Files (${{ matrix.name }})
-
-    outputs:
-      job_name: ${{ matrix.name }}
-      run_second: ${{ matrix.run_second }}
-      files_artifact: ${{ env.files_artifact }}
-
     steps:
 
-    - name: Create files
+    - name: Find package and run vagrant
       run: |
-        mkdir -p build/dir1/dir2/dir3
-        echo "000" > build/file0
-        echo "111" > build/dir1/file1
-        echo "222" > build/dir1/dir2/file2
-        echo "333" > build/dir1/dir2/dir3/file3
-        mkdir -p dir
-        echo "abracadabra" > dir/abracadabra.txt
-        echo "text" > dir/text.txt
+        mkdir simulator
+        mkdir -p /build/_packages
+        echo "smth" > ${{ env.package_path }}/smth_0.4.0_amd64.deb
 
-    - name: Display files in working directory
-      run: ls -Rhl
-
-    - name: Upload files
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.files_artifact }}
-        path: |
-          build/file0
-          build/dir1/file1
-          build/dir1/dir2/file2
-          build/dir1/dir2/dir3/file3
-        retention-days: 1
-
-    - name: Upload folder
-      if: matrix.run_second == true
-      uses: actions/upload-artifact@v3
-      with:
-        name: Folder
-        path: dir
-        retention-days: 1
-
-  second:
-    runs-on: macos-latest
-    needs: [first]
-
-    if: needs.first.outputs.run_second == true
-
-    defaults:
-      run:
-        working-directory: files
-
-    steps:
-
-    - name: Checkout files
-      uses: Bhacaz/checkout-files@v2
-      with:
-        files: files
-
-    - name: Display job output
+    - name: Find package and run vagrant
+      working-directory: simulator
       run: |
-        echo "${{ needs.first.outputs.job_name }}"
-        echo "${{ needs.first.outputs.files_artifact }}"
-
-    - name: Download files
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ needs.first.outputs.files_artifact }}
-        path: files
-
-    - name: Download folder
-      uses: actions/download-artifact@v3
-      with:
-        name: Folder
-        path: files
-
-    - name: Select first file with extention
-      run: |
-        textfiles=( *.txt )
-        echo "${textfiles[0]}"
-
-    - name: Display files in working directory
-      run: ls -Rhl
-
-    - name: Delete unused artifact
-      uses: geekyeggo/delete-artifact@v2
-      with:
-          name: Folder
+        debfiles=( ${{ env.package_path }}/*.deb )
+        echo "Package is ${debfiles[0]}"
