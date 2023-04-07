@@ -9,16 +9,26 @@ jobs:
   first:
     runs-on: ubuntu-latest
 
+    container:
+      image: ${{ matrix.image }}
+      env:
+        TZ: Europe/Berlin
+        DEBIAN_FRONTEND: noninteractive
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      steps:
+      - name: create package
+        run: |
+          mkdir simulator
+          mkdir -p build/_packages
+          echo "smth" > ${{ env.package_path }}/smth_0.4.0_amd64.deb
+          ls -Rhl
+
     steps:
-
-    - name: Find package and run vagrant
-      run: |
-        mkdir simulator
-        mkdir -p build/_packages
-        echo "smth" > ${{ env.package_path }}/smth_0.4.0_amd64.deb
-
-    - name: Find package and run vagrant
+    - name: Find package
       working-directory: simulator
       run: |
-        debfiles=( ../build/_packages/*.deb )
+        ls -Rhl
+        debfiles=( ${{ env.package_path }}/*.deb )
+        PACKAGE=$(ls ${{ env.package_path }}/*.deb| head -1)
         echo "Package is ${debfiles[0]}"
